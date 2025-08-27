@@ -149,6 +149,7 @@ $SB make $PARALLEL $V
 make install $V
 cd ../..
 
+exit 0
 # PulseView
 $GIT_CLONE $REPO_BASE/pulseview
 cd pulseview
