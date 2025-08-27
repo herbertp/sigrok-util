@@ -192,6 +192,10 @@ class Decoder(srd.Decoder):
         # TODO: Warning/error on invalid cycle types.
         if 'Reserved' in self.cycle_type:
             self.putb([0, ['Invalid cycle type (%s)' % lad_bits]])
+            # An invalid cycle type should not happen, so we just go
+            # back to the IDLE state and wait for the next LFRAME# assertion.
+            self.state = 'IDLE'
+            return
 
         self.es_block = self.samplenum
         self.putb([2, ['Cycle type: %s' % self.cycle_type]])
