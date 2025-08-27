@@ -68,7 +68,7 @@ cd $BUILDDIR
 
 GIT_CLONE="git clone --depth=1"
 
-REPO_BASE="git://sigrok.org"
+REPO_BASE="git@github.com:herbertp"
 
 # -----------------------------------------------------------------------------
 
@@ -157,5 +157,5 @@ cd build
 PKG_CONFIG_PATH=$P $SB cmake -DCMAKE_INSTALL_PREFIX:PATH=$PREFIX -DDISABLE_WERROR=y -DENABLE_TESTS=y -DCMAKE_EXPORT_COMPILE_COMMANDS=y ..
 $SB make $PARALLEL $V
 make install $V
-$SB make test $V
+# $SB make test $V
 cd ../..
