@@ -1,0 +1,80 @@
+lpc-1: Start of cycle for a target
+lpc-1: Cycle type: I/O write
+lpc-1: Address: 0x0080
+lpc-1: DATA: 0x00
+lpc-1: Stop/abort (end of a cycle for a target)
+lpc-1: Start of cycle for a target
+lpc-1: Cycle type: I/O write
+lpc-1: Address: 0x0080
+lpc-1: DATA: 0x11
+lpc-1: Stop/abort (end of a cycle for a target)
+lpc-1: Start of cycle for a target
+lpc-1: Cycle type: I/O write
+lpc-1: Address: 0x0080
+lpc-1: DATA: 0x22
+lpc-1: Stop/abort (end of a cycle for a target)
+lpc-1: Start of cycle for a target
+lpc-1: Cycle type: I/O write
+lpc-1: Address: 0x0080
+lpc-1: DATA: 0x33
+lpc-1: Stop/abort (end of a cycle for a target)
+lpc-1: Start of cycle for a target
+lpc-1: Cycle type: I/O write
+lpc-1: Address: 0x0080
+lpc-1: DATA: 0x44
+lpc-1: Stop/abort (end of a cycle for a target)
+lpc-1: Start of cycle for a target
+lpc-1: Cycle type: I/O write
+lpc-1: Address: 0x0080
+lpc-1: DATA: 0x55
+lpc-1: Stop/abort (end of a cycle for a target)
+lpc-1: Start of cycle for a target
+lpc-1: Cycle type: I/O write
+lpc-1: Address: 0x0080
+lpc-1: DATA: 0x66
+lpc-1: Stop/abort (end of a cycle for a target)
+lpc-1: Start of cycle for a target
+lpc-1: Cycle type: I/O write
+lpc-1: Address: 0x0080
+lpc-1: DATA: 0x77
+lpc-1: Stop/abort (end of a cycle for a target)
+lpc-1: Start of cycle for a target
+lpc-1: Cycle type: I/O write
+lpc-1: Address: 0x0080
+lpc-1: DATA: 0x88
+lpc-1: Stop/abort (end of a cycle for a target)
+lpc-1: Start of cycle for a target
+lpc-1: Cycle type: I/O write
+lpc-1: Address: 0x0080
+lpc-1: DATA: 0x99
+lpc-1: Stop/abort (end of a cycle for a target)
+lpc-1: Start of cycle for a target
+lpc-1: Cycle type: I/O write
+lpc-1: Address: 0x0080
+lpc-1: DATA: 0xaa
+lpc-1: Stop/abort (end of a cycle for a target)
+lpc-1: Start of cycle for a target
+lpc-1: Cycle type: I/O write
+lpc-1: Address: 0x0080
+lpc-1: DATA: 0xbb
+lpc-1: Stop/abort (end of a cycle for a target)
+lpc-1: Start of cycle for a target
+lpc-1: Cycle type: I/O write
+lpc-1: Address: 0x0080
+lpc-1: DATA: 0xcc
+lpc-1: Stop/abort (end of a cycle for a target)
+lpc-1: Start of cycle for a target
+lpc-1: Cycle type: I/O write
+lpc-1: Address: 0x0080
+lpc-1: DATA: 0xdd
+lpc-1: Stop/abort (end of a cycle for a target)
+lpc-1: Start of cycle for a target
+lpc-1: Cycle type: I/O write
+lpc-1: Address: 0x0080
+lpc-1: DATA: 0xee
+lpc-1: Stop/abort (end of a cycle for a target)
+lpc-1: Start of cycle for a target
+lpc-1: Cycle type: I/O write
+lpc-1: Address: 0x0080
+lpc-1: DATA: 0xff
+lpc-1: Stop/abort (end of a cycle for a target)
