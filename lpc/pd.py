@@ -69,7 +69,7 @@ class Decoder(srd.Decoder):
                 self.pins = self.wait({0: "f"}) # lclk
                 lad = self.get_lad()
                 if lad == 2: # I/O Write
-                    self.put(self.samplenum, self.samplenum, self.out_ann, [1, ["I/O write", "IOW"]])
+                    self.put(self.samplenum, self.samplenum, self.out_ann, [1, ["Cycle type: I/O write", "IOW"]])
                     self.state = "ADDRESS"
                     self.address = 0
                     self.nibble_count = 0
@@ -79,7 +79,7 @@ class Decoder(srd.Decoder):
             elif self.state == "ADDRESS":
                 self.pins = self.wait({0: "f"}) # lclk
                 lad = self.get_lad()
-                self.address |= (lad << (4 * self.nibble_count))
+                self.address = (self.address << 4) | lad
                 self.nibble_count += 1
                 if self.nibble_count == 4:
                     self.put(self.samplenum, self.samplenum, self.out_ann, [2, ["Address: 0x%04x" % self.address, "Addr"]])
@@ -90,7 +90,7 @@ class Decoder(srd.Decoder):
             elif self.state == "DATA":
                 self.pins = self.wait({0: "f"}) # lclk
                 lad = self.get_lad()
-                self.data |= (lad << (4 * self.nibble_count))
+                self.data = (self.data << 4) | lad
                 self.nibble_count += 1
                 if self.nibble_count == 2:
                     self.put(self.samplenum, self.samplenum, self.out_ann, [3, ["DATA: 0x%02x" % self.data, "Data"]])
@@ -99,8 +99,10 @@ class Decoder(srd.Decoder):
             elif self.state == "SYNC":
                 self.pins = self.wait({0: "f"}) # lclk
                 lad = self.get_lad()
-                if lad == 0xf:
+                if lad in (0x0, 0xa, 0xf):
                     self.state = "STOP"
+                elif lad in (0x5, 0x6):
+                    pass
                 else:
                     self.state = "ABORT_CYCLE"
 
