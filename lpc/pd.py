@@ -159,28 +159,41 @@ class Decoder(srd.Decoder):
         self.put(self.ss_block, self.es_block, self.out_ann, data)
 
     def handle_get_start(self, lad, lad_bits, lframe):
-        # LAD[3:0]: START field (1 clock cycle).
+        # This function is called on each clock edge while LFRAME# is low,
+        # and on the first clock edge where LFRAME# is high.
 
-        # The last value of LAD[3:0] before LFRAME# gets de-asserted is what
-        # the peripherals must use. However, the host can keep LFRAME# asserted
-        # multiple clocks, and we output all START fields that occur, even
-        # though the peripherals are supposed to ignore all but the last one.
-        self.es_block = self.samplenum
-        self.putb([1, [fields['START'][lad], 'START', 'St', 'S']])
-        self.ss_block = self.samplenum
+        if lframe == 0:
+            # LFRAME# is low, we are seeing a START field.
+            # The spec says peripherals should only use the last one.
+            # We will output all of them, but only store the last one.
+            self.es_block = self.samplenum
+            self.putb([1, [fields['START'].get(lad, 'Reserved START'), 'START', 'St', 'S']])
+            self.ss_block = self.samplenum
 
-        # Output a warning if LAD[3:0] changes while LFRAME# is low.
-        # TODO
-        if (self.lad != -1 and self.lad != lad):
-            self.putb([0, ['LAD[3:0] changed while LFRAME# was asserted']])
+            if (self.lad != -1 and self.lad != lad):
+                self.putb([0, ['LAD[3:0] changed while LFRAME# was asserted']])
 
-        # LFRAME# is asserted (low). Wait until it gets de-asserted again
-        # (the host is allowed to keep it asserted multiple clocks).
-        if lframe != 1:
+            self.lad = lad # Capture the value
             return
 
+        # If we get here, lframe is 1. This is the first clock it's high.
+        # The actual START field was the value on the previous clock.
         self.start_field = self.lad
-        self.state = 'GET CT/DR'
+
+        # The current 'lad' value is the Cycle Type / Direction.
+        # So we process it here and transition directly to GET_ADDR.
+        self.cycle_type = fields['CT_DR'].get(lad, 'Reserved / unknown')
+
+        if 'Reserved' in self.cycle_type:
+            self.putb([0, ['Invalid cycle type (%s)' % lad_bits]])
+
+        self.es_block = self.samplenum
+        self.putb([2, ['Cycle type: %s' % self.cycle_type]])
+        self.ss_block = self.samplenum
+
+        self.state = 'GET ADDR'
+        self.addr = 0
+        self.cur_nibble = 0
 
     def handle_get_ct_dr(self, lad, lad_bits):
         # LAD[3:0]: Cycle type / direction field (1 clock cycle).
@@ -226,7 +239,7 @@ class Decoder(srd.Decoder):
         self.ss_block = self.samplenum
 
         self.state = 'GET TAR'
-        self.tar_count = 0
+        self.tarcount = 0
 
     def handle_get_tar(self, lad, lad_bits):
         # LAD[3:0]: First TAR (turn-around) field (2 clock cycles).
@@ -351,8 +364,6 @@ class Decoder(srd.Decoder):
                 self.lad = -1
             elif self.state == 'GET START':
                 self.handle_get_start(lad, lad_bits, lframe)
-            elif self.state == 'GET CT/DR':
-                self.handle_get_ct_dr(lad, lad_bits)
             elif self.state == 'GET ADDR':
                 self.handle_get_addr(lad, lad_bits)
             elif self.state == 'GET TAR':

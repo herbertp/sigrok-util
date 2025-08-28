@@ -1,3 +1,6 @@
 build/
 firmware/kingst-la/*.bitstream
 firmware/kingst-la/*.fw
+
+lpc/__pycache__/__init__.cpython-312.pyc
+lpc/__pycache__/pd.cpython-312.pyc
