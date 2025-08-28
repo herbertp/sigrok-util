@@ -24,14 +24,13 @@ class Decoder(srd.Decoder):
 
     annotations = (
         ("start", "Start of cycle"),
-        ("grant", "Grant"),
         ("cycle-type", "Cycle type"),
         ("address", "Address"),
         ("data", "Data"),
         ("stop", "Stop of cycle"),
     )
     annotation_rows = (
-        ("fields", "Fields", (0, 1, 2, 3, 4, 5)),
+        ("fields", "Fields", (0, 1, 2, 3, 4)),
     )
 
     def __init__(self):
@@ -62,19 +61,15 @@ class Decoder(srd.Decoder):
                 self.pins = self.wait({0: "f"}) # lclk
                 lad = self.get_lad()
                 if lad == 0:
-                    self.state = "GRANT"
+                    self.state = "CYCLE_TYPE"
                 else:
                     self.state = "ABORT_CYCLE"
 
-            elif self.state == "GRANT":
-                self.pins = self.wait({0: "f"}) # lclk
-                self.put(self.samplenum, self.samplenum, self.out_ann, [1, ["Grant for bus master 0", "Grant"]])
-                self.state = "CYCLE_TYPE"
-
             elif self.state == "CYCLE_TYPE":
+                self.pins = self.wait({0: "f"}) # lclk
                 lad = self.get_lad()
                 if lad == 2: # I/O Write
-                    self.put(self.samplenum, self.samplenum, self.out_ann, [2, ["I/O write", "IOW"]])
+                    self.put(self.samplenum, self.samplenum, self.out_ann, [1, ["I/O write", "IOW"]])
                     self.state = "ADDRESS"
                     self.address = 0
                     self.nibble_count = 0
@@ -84,10 +79,10 @@ class Decoder(srd.Decoder):
             elif self.state == "ADDRESS":
                 self.pins = self.wait({0: "f"}) # lclk
                 lad = self.get_lad()
-                self.address |= (lad << (4 * (3 - self.nibble_count)))
+                self.address |= (lad << (4 * self.nibble_count))
                 self.nibble_count += 1
                 if self.nibble_count == 4:
-                    self.put(self.samplenum, self.samplenum, self.out_ann, [3, ["Address: 0x%04x" % self.address, "Addr"]])
+                    self.put(self.samplenum, self.samplenum, self.out_ann, [2, ["Address: 0x%04x" % self.address, "Addr"]])
                     self.state = "DATA"
                     self.data = 0
                     self.nibble_count = 0
@@ -98,7 +93,7 @@ class Decoder(srd.Decoder):
                 self.data |= (lad << (4 * self.nibble_count))
                 self.nibble_count += 1
                 if self.nibble_count == 2:
-                    self.put(self.samplenum, self.samplenum, self.out_ann, [4, ["DATA: 0x%02x" % self.data, "Data"]])
+                    self.put(self.samplenum, self.samplenum, self.out_ann, [3, ["DATA: 0x%02x" % self.data, "Data"]])
                     self.state = "SYNC"
 
             elif self.state == "SYNC":
@@ -111,7 +106,7 @@ class Decoder(srd.Decoder):
 
             elif self.state == "STOP":
                 self.pins = self.wait({1: "r"}) # lframe
-                self.put(self.samplenum, self.samplenum, self.out_ann, [5, ["Stop/abort (end of a cycle for a target)", "Stop"]])
+                self.put(self.samplenum, self.samplenum, self.out_ann, [4, ["Stop/abort (end of a cycle for a target)", "Stop"]])
                 self.state = "IDLE"
 
             elif self.state == "ABORT_CYCLE":
